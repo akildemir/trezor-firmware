@@ -123,7 +123,8 @@ def _set_tx_extra(state: State) -> bytes:
     """
     Sets tx public keys into transaction's extra.
     Extra field is supposed to be sorted (by sort_tx_extra() in the Monero)
-    Tag ordering: TX_EXTRA_TAG_PUBKEY, TX_EXTRA_TAG_ADDITIONAL_PUBKEYS, TX_EXTRA_NONCE
+    Tag ordering: TX_EXTRA_TAG_PUBKEY, TX_EXTRA_TAG_ADDITIONAL_PUBKEYS,
+    TX_EXTRA_NONCE (payment id), TX_EXTRA_NONCE (arbitrary data)
     """
     from trezor import utils
 
@@ -131,6 +132,7 @@ def _set_tx_extra(state: State) -> bytes:
     from apps.monero.xmr.serialize import int_serialize
 
     extra_nonce = state.extra_nonce  # local_cache_attribute
+    extra_arbitrary_data = state.extra_arbitrary_data  # local_cache_attribute
 
     # Extra buffer length computation
     # TX_EXTRA_TAG_PUBKEY (1B) | tx_pub_key (32B)
@@ -149,6 +151,9 @@ def _set_tx_extra(state: State) -> bytes:
     if extra_nonce:
         extra_size += len(extra_nonce)
 
+    if extra_arbitrary_data:
+        extra_size += len(extra_arbitrary_data)
+
     extra = bytearray(extra_size)
     extra[0] = 1  # TX_EXTRA_TAG_PUBKEY
     crypto.encodepoint_into(memoryview(extra)[1:], state.tx_pub)
@@ -165,6 +170,11 @@ def _set_tx_extra(state: State) -> bytes:
 
     if extra_nonce:
         utils.memcpy(extra, offset, extra_nonce, 0, len(extra_nonce))
+        offset += len(extra_nonce)
         state.extra_nonce = None
+
+    if extra_arbitrary_data:
+        utils.memcpy(extra, offset, extra_arbitrary_data, 0, len(extra_arbitrary_data))
+        state.extra_arbitrary_data = None
 
     return extra

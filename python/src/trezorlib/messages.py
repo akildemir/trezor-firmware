@@ -7294,6 +7294,7 @@ class MoneroTransactionData(protobuf.MessageType):
         14: protobuf.Field("hard_fork", "uint32", repeated=False, required=False, default=None),
         15: protobuf.Field("monero_version", "bytes", repeated=False, required=False, default=None),
         16: protobuf.Field("chunkify", "bool", repeated=False, required=False, default=None),
+        17: protobuf.Field("arbitrary_data", "bytes", repeated=False, required=False, default=None),
     }
 
     def __init__(
@@ -7315,6 +7316,7 @@ class MoneroTransactionData(protobuf.MessageType):
         hard_fork: int | None = None,
         monero_version: bytes | None = None,
         chunkify: bool | None = None,
+        arbitrary_data: bytes | None = None,
     ) -> None:
         self.outputs: Sequence[MoneroTransactionDestinationEntry] = outputs if outputs is not None else []
         self.minor_indices: Sequence[int] = minor_indices if minor_indices is not None else []
@@ -7332,6 +7334,7 @@ class MoneroTransactionData(protobuf.MessageType):
         self.hard_fork = hard_fork
         self.monero_version = monero_version
         self.chunkify = chunkify
+        self.arbitrary_data = arbitrary_data
 
 
 class MoneroRingCtSig(protobuf.MessageType):

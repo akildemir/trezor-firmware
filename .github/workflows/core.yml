@@ -198,7 +198,6 @@ jobs:
 
   core_emu_arm:
     name: Build emu ARM (${{ matrix.model }}, ${{ matrix.coins }}, ${{ matrix.type }}, ${{ matrix.asan }}${{matrix.n1w1 && ', n1w1' || '' }})
-    if: github.repository == 'trezor/trezor-firmware'
     runs-on: ubuntu-26.04-arm
     timeout-minutes: 15
     needs: param

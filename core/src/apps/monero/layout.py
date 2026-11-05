@@ -154,6 +154,9 @@ async def require_confirm_transaction(
     if payment_id and not payment_id_shown and payment_id != DUMMY_PAYMENT_ID:
         await _require_confirm_payment_id(payment_id)
 
+    if tsx_data.arbitrary_data:
+        await _require_confirm_arbitrary_data(tsx_data.arbitrary_data)
+
     assert tsx_data.fee is not None
     await _require_confirm_fee(tsx_data.fee)
     progress.step(state, 0)
@@ -200,6 +203,17 @@ async def _require_confirm_payment_id(payment_id: AnyBytes) -> None:
         "confirm_payment_id",
         TR.monero__payment_id,
         payment_id,
+        br_code=BRT_SignTx,
+    )
+
+
+async def _require_confirm_arbitrary_data(arbitrary_data: AnyBytes) -> None:
+    from trezor.ui.layouts import confirm_blob
+
+    await confirm_blob(
+        "confirm_arbitrary_data",
+        TR.monero__arbitrary_data,
+        arbitrary_data,
         br_code=BRT_SignTx,
     )
 

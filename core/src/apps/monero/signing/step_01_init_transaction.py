@@ -2,6 +2,7 @@
 Initializes a new transaction.
 """
 
+from micropython import const
 from typing import TYPE_CHECKING
 
 from apps.monero import signing
@@ -19,6 +20,9 @@ if TYPE_CHECKING:
 
     from apps.monero.layout import MoneroTransactionProgress
     from apps.monero.signing.state import State
+
+# Monero arbitrary data max length.
+_ARBITRARY_DATA_MAX_LEN = const(255)
 
 
 async def init_transaction(
@@ -61,6 +65,9 @@ async def init_transaction(
     # confirmation renders it into an integrated address
     _check_payment_id(tsx_data)
 
+    # Reject oversized arbitrary data before the confirmation displays it
+    _check_arbitrary_data(tsx_data)
+
     # Ask for confirmation
     assert state.creds.network_type is not None
     await layout.require_confirm_transaction(
@@ -97,8 +104,9 @@ async def init_transaction(
     _check_rsig_data(state, tsx_data.rsig_data)
     _check_subaddresses(state, outputs)
 
-    # Extra processing, payment id
+    # Extra processing, payment id and arbitrary data
     _process_payment_id(state, tsx_data)
+    _process_arbitrary_data(state, tsx_data)
     _compute_sec_keys(state, tsx_data)
     gc.collect()
 
@@ -411,6 +419,46 @@ def _process_payment_id(state: State, tsx_data: MoneroTransactionData) -> None:
     extra_buff[2] = extra_prefix
     extra_buff[3:] = extra_nonce
     state.extra_nonce = extra_buff
+
+
+def _check_arbitrary_data(tsx_data: MoneroTransactionData) -> None:
+    """
+    Reject arbitrary data that cannot go into a TX_EXTRA_NONCE entry.
+
+    _process_arbitrary_data enforces the same limit, but it runs after the
+    user has confirmed, so oversized data would reach the trusted display
+    before anything rejects it.
+    """
+    arbitrary_data = tsx_data.arbitrary_data  # local_cache_attribute
+
+    if arbitrary_data and len(arbitrary_data) > _ARBITRARY_DATA_MAX_LEN:
+        raise ValueError("Arbitrary data could be 255 bytes max")
+
+
+def _process_arbitrary_data(state: State, tsx_data: MoneroTransactionData) -> None:
+    """
+    Writes host-provided arbitrary data to the `extra` field as a second
+    TX_EXTRA_NONCE = 0x02 entry, placed after the payment id entry.
+
+    Unlike the payment id the data carries no sub-tag: the nonce payload
+    is the data itself.
+    """
+    arbitrary_data = tsx_data.arbitrary_data  # local_cache_attribute
+
+    # Empty data is no data at all, same as an empty payment id
+    if not arbitrary_data:
+        return
+
+    length = len(arbitrary_data)
+    if length > _ARBITRARY_DATA_MAX_LEN:
+        raise ValueError("Arbitrary data could be 255 bytes max")
+
+    # write it to extra
+    extra_buff = bytearray(2 + length)
+    extra_buff[0] = 2  # TX_EXTRA_NONCE
+    extra_buff[1] = length
+    extra_buff[2:] = arbitrary_data
+    state.extra_arbitrary_data = extra_buff
 
 
 def _get_key_for_payment_id_encryption(

@@ -5548,6 +5548,7 @@ if TYPE_CHECKING:
         hard_fork: "int | None"
         monero_version: "AnyBytes | None"
         chunkify: "bool | None"
+        arbitrary_data: "AnyBytes | None"
 
         def __init__(
             self,
@@ -5568,6 +5569,7 @@ if TYPE_CHECKING:
             hard_fork: "int | None" = None,
             monero_version: "AnyBytes | None" = None,
             chunkify: "bool | None" = None,
+            arbitrary_data: "AnyBytes | None" = None,
         ) -> None:
             pass
 

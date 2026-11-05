@@ -13,6 +13,7 @@ if not utils.BITCOIN_ONLY:
 
 
 PAYMENT_ID = b"\xde\xad\xbe\xef\xde\xad\xbe\xef"
+ARBITRARY_DATA = b"\x01\x02\x03\x04"
 
 
 class _Progress:
@@ -46,11 +47,13 @@ class TestMoneroLayout(unittest.TestCase):
     def setUp(self):
         self.shown_outputs = []
         self.shown_payment_ids = []
+        self.shown_arbitrary_data = []
         self.originals = {
             name: getattr(layout, name)
             for name in (
                 "_require_confirm_output",
                 "_require_confirm_payment_id",
+                "_require_confirm_arbitrary_data",
                 "_require_confirm_fee",
             )
         }
@@ -61,24 +64,31 @@ class TestMoneroLayout(unittest.TestCase):
         async def confirm_payment_id(payment_id):
             self.shown_payment_ids.append(payment_id)
 
+        async def confirm_arbitrary_data(arbitrary_data):
+            self.shown_arbitrary_data.append(arbitrary_data)
+
         async def confirm_fee(fee):
             pass
 
         layout._require_confirm_output = confirm_output
         layout._require_confirm_payment_id = confirm_payment_id
+        layout._require_confirm_arbitrary_data = confirm_arbitrary_data
         layout._require_confirm_fee = confirm_fee
 
     def tearDown(self):
         for name, original in self.originals.items():
             setattr(layout, name, original)
 
-    def _confirm(self, outputs, change_dts, payment_id, integrated_indices):
+    def _confirm(
+        self, outputs, change_dts, payment_id, integrated_indices, arbitrary_data=None
+    ):
         tsx_data = MoneroTransactionData(
             outputs=outputs,
             change_dts=change_dts,
             fee=1000,
             payment_id=payment_id,
             integrated_indices=integrated_indices,
+            arbitrary_data=arbitrary_data,
         )
         await_result(
             layout.require_confirm_transaction(
@@ -86,10 +96,16 @@ class TestMoneroLayout(unittest.TestCase):
             )
         )
 
-    def _with_change(self, payment_id, integrated_indices):
+    def _with_change(self, payment_id, integrated_indices, arbitrary_data=None):
         """One real output at index 0, change at index 1."""
         change = _dst(20, 500)
-        self._confirm([_dst(10, 100), change], change, payment_id, integrated_indices)
+        self._confirm(
+            [_dst(10, 100), change],
+            change,
+            payment_id,
+            integrated_indices,
+            arbitrary_data,
+        )
 
     def _with_dummy(self, payment_id, integrated_indices):
         """One real output at index 0, zero-amount dummy at index 1, no change."""
@@ -160,6 +176,26 @@ class TestMoneroLayout(unittest.TestCase):
         self._with_change(long_id, [])
         self.assertEqual(self.shown_payment_ids, [long_id])
         self.assertIsNone(self.shown_outputs[0][1])
+
+    # --- arbitrary data ------------------------------------------------------
+
+    def test_arbitrary_data_gets_its_own_screen(self):
+        self._with_change(None, [], ARBITRARY_DATA)
+        self.assertEqual(self.shown_arbitrary_data, [ARBITRARY_DATA])
+
+    def test_arbitrary_data_is_shown_alongside_payment_id(self):
+        # both end up in tx.extra, so both must be confirmed
+        self._with_change(PAYMENT_ID, [], ARBITRARY_DATA)
+        self.assertEqual(self.shown_payment_ids, [PAYMENT_ID])
+        self.assertEqual(self.shown_arbitrary_data, [ARBITRARY_DATA])
+
+    def test_empty_arbitrary_data_is_no_arbitrary_data(self):
+        self._with_change(None, [], b"")
+        self.assertEqual(self.shown_arbitrary_data, [])
+
+    def test_no_arbitrary_data(self):
+        self._with_change(None, [])
+        self.assertEqual(self.shown_arbitrary_data, [])
 
 
 if __name__ == "__main__":

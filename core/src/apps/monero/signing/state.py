@@ -105,6 +105,9 @@ class State:
         # TX_EXTRA_NONCE extra field for tx.extra, due to sort_tx_extra()
         self.extra_nonce: bytes | None = None
 
+        # Second TX_EXTRA_NONCE extra field carrying host-provided arbitrary data
+        self.extra_arbitrary_data: bytes | None = None
+
         # Last key image seen. Used for input permutation correctness check
         self.last_ki: bytes | None = None
 
