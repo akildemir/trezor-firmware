@@ -9,6 +9,7 @@ if not utils.BITCOIN_ONLY:
     )
 
     from apps.monero.signing import step_01_init_transaction
+    from apps.monero.signing.state import State
 
 
 def _dst(tag: int, amount: int) -> "MoneroTransactionDestinationEntry":
@@ -70,6 +71,58 @@ class TestMoneroCheckPaymentId(unittest.TestCase):
 
     def test_empty_payment_id_with_indices(self):
         self._check(b"", [0])
+
+
+@unittest.skipUnless(not utils.BITCOIN_ONLY, "altcoin")
+class TestMoneroArbitraryData(unittest.TestCase):
+    """
+    Host-provided arbitrary data lands in tx.extra as a second TX_EXTRA_NONCE
+    entry next to the payment id one, so it obeys the same 255-byte cap and
+    is rejected before the confirmation displays it.
+    """
+
+    def _tsx_data(self, arbitrary_data):
+        change = _dst(20, 500)
+        return MoneroTransactionData(
+            outputs=[_dst(10, 100), change],
+            change_dts=change,
+            fee=1000,
+            arbitrary_data=arbitrary_data,
+        )
+
+    def _process(self, arbitrary_data):
+        state = State()
+        tsx_data = self._tsx_data(arbitrary_data)
+        step_01_init_transaction._check_arbitrary_data(tsx_data)
+        step_01_init_transaction._process_arbitrary_data(state, tsx_data)
+        return state.extra_arbitrary_data
+
+    def test_data_is_wrapped_in_a_nonce_entry(self):
+        # TX_EXTRA_NONCE tag, one length byte, then the data without a sub-tag
+        self.assertEqual(
+            self._process(b"\xde\xad\xbe\xef"), b"\x02\x04\xde\xad\xbe\xef"
+        )
+
+    def test_max_length_is_accepted(self):
+        data = bytes(range(256))[:255]
+        self.assertEqual(self._process(data), b"\x02\xff" + data)
+
+    def test_oversized_data_is_rejected_before_confirmation(self):
+        with self.assertRaises(ValueError):
+            step_01_init_transaction._check_arbitrary_data(self._tsx_data(bytes(256)))
+
+    def test_oversized_data_is_rejected_when_processed(self):
+        with self.assertRaises(ValueError):
+            step_01_init_transaction._process_arbitrary_data(
+                State(), self._tsx_data(bytes(256))
+            )
+
+    def test_no_data_writes_nothing(self):
+        self.assertIsNone(self._process(None))
+
+    def test_empty_data_writes_nothing(self):
+        # the client may send the field as empty bytes rather than omitting it
+        self.assertIsNone(self._process(b""))
 
 
 if __name__ == "__main__":

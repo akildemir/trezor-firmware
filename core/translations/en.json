@@ -1371,6 +1371,7 @@
       "Delizia": "Transaction fee",
       "Eckhart": "Transaction fee"
     },
+    "monero__arbitrary_data": "Arbitrary data",
     "monero__confirm_export": "Confirm export",
     "monero__confirm_ki_sync": "Confirm ki sync",
     "monero__confirm_refresh": "Confirm refresh",

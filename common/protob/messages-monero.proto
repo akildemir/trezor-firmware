@@ -152,6 +152,7 @@ message MoneroTransactionInitRequest {
         optional uint32 hard_fork = 14;       // transaction hard fork number
         optional bytes monero_version = 15;   // monero software version
         optional bool chunkify = 16;          // display the address in chunks of 4 characters
+        optional bytes arbitrary_data = 17;   // arbitrary data for a TX_EXTRA_NONCE entry, max 255 bytes
     }
 }
 

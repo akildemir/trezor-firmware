@@ -524,6 +524,7 @@ class TR:
     modify_fee__no_change: str = "Fee did not change.\n"
     modify_fee__title: str = "Modify fee"
     modify_fee__transaction_fee: str = "Transaction fee:"
+    monero__arbitrary_data: str = "Arbitrary data"
     monero__confirm_export: str = "Confirm export"
     monero__confirm_ki_sync: str = "Confirm ki sync"
     monero__confirm_refresh: str = "Confirm refresh"

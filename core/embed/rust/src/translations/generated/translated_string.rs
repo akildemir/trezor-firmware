@@ -1700,6 +1700,8 @@ pub enum TranslatedString {
     #[cfg(feature = "universal_fw")]
     solana__view_details_in_menu = 1316,  // "View details in the menu."
     menu__turn_off = 1317,  // {"Bolt": "", "Caesar": "", "Delizia": "", "Eckhart": "Turn off"}
+    #[cfg(feature = "universal_fw")]
+    monero__arbitrary_data = 1318,  // "Arbitrary data"
 }
 
 impl TranslatedString {
@@ -3025,6 +3027,7 @@ impl TranslatedString {
                 "Blind signing",
                 "View details in the menu.",
                 "",
+                "Arbitrary data",
             );
 
             #[cfg(all(feature = "debug", feature = "universal_fw"))]
@@ -4348,6 +4351,7 @@ impl TranslatedString {
                 19187,
                 19212,
                 19212,
+                19226,
             ];
 
             #[cfg(all(feature = "debug", not(feature = "universal_fw")))]
@@ -5670,6 +5674,7 @@ impl TranslatedString {
                 "Blind signing",
                 "View details in the menu.",
                 "",
+                "Arbitrary data",
             );
 
             #[cfg(all(feature = "debug", not(feature = "universal_fw")))]
@@ -6993,6 +6998,7 @@ impl TranslatedString {
                 19187,
                 19212,
                 19212,
+                19226,
             ];
 
             #[cfg(all(not(feature = "debug"), feature = "universal_fw"))]
@@ -8315,6 +8321,7 @@ impl TranslatedString {
                 "Blind signing",
                 "View details in the menu.",
                 "",
+                "Arbitrary data",
             );
 
             #[cfg(all(not(feature = "debug"), feature = "universal_fw"))]
@@ -9638,6 +9645,7 @@ impl TranslatedString {
                 19187,
                 19212,
                 19212,
+                19226,
             ];
 
             #[cfg(all(not(feature = "debug"), not(feature = "universal_fw")))]
@@ -10960,6 +10968,7 @@ impl TranslatedString {
                 "Blind signing",
                 "View details in the menu.",
                 "",
+                "Arbitrary data",
             );
 
             #[cfg(all(not(feature = "debug"), not(feature = "universal_fw")))]
@@ -12283,6 +12292,7 @@ impl TranslatedString {
                 19187,
                 19212,
                 19212,
+                19226,
             ];
 
         } else if #[cfg(feature = "layout_caesar")] {
@@ -13606,6 +13616,7 @@ impl TranslatedString {
                 "Blind signing",
                 "View details in the menu.",
                 "",
+                "Arbitrary data",
             );
 
             #[cfg(all(feature = "debug", feature = "universal_fw"))]
@@ -14929,6 +14940,7 @@ impl TranslatedString {
                 17313,
                 17338,
                 17338,
+                17352,
             ];
 
             #[cfg(all(feature = "debug", not(feature = "universal_fw")))]
@@ -16251,6 +16263,7 @@ impl TranslatedString {
                 "Blind signing",
                 "View details in the menu.",
                 "",
+                "Arbitrary data",
             );
 
             #[cfg(all(feature = "debug", not(feature = "universal_fw")))]
@@ -17574,6 +17587,7 @@ impl TranslatedString {
                 17313,
                 17338,
                 17338,
+                17352,
             ];
 
             #[cfg(all(not(feature = "debug"), feature = "universal_fw"))]
@@ -18896,6 +18910,7 @@ impl TranslatedString {
                 "Blind signing",
                 "View details in the menu.",
                 "",
+                "Arbitrary data",
             );
 
             #[cfg(all(not(feature = "debug"), feature = "universal_fw"))]
@@ -20219,6 +20234,7 @@ impl TranslatedString {
                 17313,
                 17338,
                 17338,
+                17352,
             ];
 
             #[cfg(all(not(feature = "debug"), not(feature = "universal_fw")))]
@@ -21541,6 +21557,7 @@ impl TranslatedString {
                 "Blind signing",
                 "View details in the menu.",
                 "",
+                "Arbitrary data",
             );
 
             #[cfg(all(not(feature = "debug"), not(feature = "universal_fw")))]
@@ -22864,6 +22881,7 @@ impl TranslatedString {
                 17313,
                 17338,
                 17338,
+                17352,
             ];
 
         } else if #[cfg(feature = "layout_delizia")] {
@@ -24187,6 +24205,7 @@ impl TranslatedString {
                 "Blind signing",
                 "View details in the menu.",
                 "",
+                "Arbitrary data",
             );
 
             #[cfg(all(feature = "debug", feature = "universal_fw"))]
@@ -25510,6 +25529,7 @@ impl TranslatedString {
                 19463,
                 19488,
                 19488,
+                19502,
             ];
 
             #[cfg(all(feature = "debug", not(feature = "universal_fw")))]
@@ -26832,6 +26852,7 @@ impl TranslatedString {
                 "Blind signing",
                 "View details in the menu.",
                 "",
+                "Arbitrary data",
             );
 
             #[cfg(all(feature = "debug", not(feature = "universal_fw")))]
@@ -28155,6 +28176,7 @@ impl TranslatedString {
                 19463,
                 19488,
                 19488,
+                19502,
             ];
 
             #[cfg(all(not(feature = "debug"), feature = "universal_fw"))]
@@ -29477,6 +29499,7 @@ impl TranslatedString {
                 "Blind signing",
                 "View details in the menu.",
                 "",
+                "Arbitrary data",
             );
 
             #[cfg(all(not(feature = "debug"), feature = "universal_fw"))]
@@ -30800,6 +30823,7 @@ impl TranslatedString {
                 19463,
                 19488,
                 19488,
+                19502,
             ];
 
             #[cfg(all(not(feature = "debug"), not(feature = "universal_fw")))]
@@ -32122,6 +32146,7 @@ impl TranslatedString {
                 "Blind signing",
                 "View details in the menu.",
                 "",
+                "Arbitrary data",
             );
 
             #[cfg(all(not(feature = "debug"), not(feature = "universal_fw")))]
@@ -33445,6 +33470,7 @@ impl TranslatedString {
                 19463,
                 19488,
                 19488,
+                19502,
             ];
 
         } else if #[cfg(feature = "layout_eckhart")] {
@@ -34768,6 +34794,7 @@ impl TranslatedString {
                 "Blind signing",
                 "View details in the menu.",
                 "Turn off",
+                "Arbitrary data",
             );
 
             #[cfg(all(feature = "debug", feature = "universal_fw"))]
@@ -36091,6 +36118,7 @@ impl TranslatedString {
                 20466,
                 20491,
                 20499,
+                20513,
             ];
 
             #[cfg(all(feature = "debug", not(feature = "universal_fw")))]
@@ -37413,6 +37441,7 @@ impl TranslatedString {
                 "Blind signing",
                 "View details in the menu.",
                 "Turn off",
+                "Arbitrary data",
             );
 
             #[cfg(all(feature = "debug", not(feature = "universal_fw")))]
@@ -38736,6 +38765,7 @@ impl TranslatedString {
                 20466,
                 20491,
                 20499,
+                20513,
             ];
 
             #[cfg(all(not(feature = "debug"), feature = "universal_fw"))]
@@ -40058,6 +40088,7 @@ impl TranslatedString {
                 "Blind signing",
                 "View details in the menu.",
                 "Turn off",
+                "Arbitrary data",
             );
 
             #[cfg(all(not(feature = "debug"), feature = "universal_fw"))]
@@ -41381,6 +41412,7 @@ impl TranslatedString {
                 20466,
                 20491,
                 20499,
+                20513,
             ];
 
             #[cfg(all(not(feature = "debug"), not(feature = "universal_fw")))]
@@ -42703,6 +42735,7 @@ impl TranslatedString {
                 "Blind signing",
                 "View details in the menu.",
                 "Turn off",
+                "Arbitrary data",
             );
 
             #[cfg(all(not(feature = "debug"), not(feature = "universal_fw")))]
@@ -44026,6 +44059,7 @@ impl TranslatedString {
                 20466,
                 20491,
                 20499,
+                20513,
             ];
 
         }
@@ -44826,6 +44860,8 @@ impl TranslatedString {
         (Qstr::MP_QSTR_modify_fee__no_change, Self::modify_fee__no_change),
         (Qstr::MP_QSTR_modify_fee__title, Self::modify_fee__title),
         (Qstr::MP_QSTR_modify_fee__transaction_fee, Self::modify_fee__transaction_fee),
+        #[cfg(feature = "universal_fw")]
+        (Qstr::MP_QSTR_monero__arbitrary_data, Self::monero__arbitrary_data),
         #[cfg(feature = "universal_fw")]
         (Qstr::MP_QSTR_monero__confirm_export, Self::monero__confirm_export),
         #[cfg(feature = "universal_fw")]
